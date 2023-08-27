@@ -9,8 +9,8 @@ import (
 )
 
 type Config struct {
-	Host               string `env:"HOST"`
-	Port               string `env:"PORT"`
+	Host               string `envconfig:"HOST" default:"127.0.0.1"`
+	Port               string `envconfig:"PORT" default:"3060"`
 	ApplicationVersion string
 }
 
@@ -21,7 +21,7 @@ func InitConfig(ctx context.Context) {
 	_ = godotenv.Load()
 
 	if err := envconfig.Process("", &Configuration); err != nil {
-		log.WithField("error", err).
+		log.WithError(err).
 		Error("Error loading .env file")
 	}
 

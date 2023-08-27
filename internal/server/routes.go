@@ -5,7 +5,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 
-	"github.com/kevinsantana/wallet-view/internal/rest"
+	"github.com/kevinsantana/wallet-view-api/internal/rest"
 )
 
 type Routes []Route

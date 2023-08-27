@@ -10,7 +10,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	log "github.com/sirupsen/logrus"
 
-	"github.com/kevinsantana/wallet-view/internal/config"
+	"github.com/kevinsantana/wallet-view-api/internal/config"
 )
 
 func Run() {
@@ -32,11 +32,11 @@ func ListenAndServe(srv *fiber.App) {
 		_ = srv.Shutdown()
 	}()
 
-	log.WithField("host", config.Configuration.ApiHost).
-		WithField("port", config.Configuration.ApiPort).
+	log.WithField("host", config.Configuration.Host).
+		WithField("port", config.Configuration.Port).
 		Info("Wallet view api server started")
 
-	srvHost := net.JoinHostPort(config.Configuration.ApiHost, config.Configuration.ApiPort)
+	srvHost := net.JoinHostPort(config.Configuration.Host, config.Configuration.Port)
 
 	if err := srv.Listen(srvHost); err != nil && err != http.ErrServerClosed {
 		log.Panicf("server error: %v", err)

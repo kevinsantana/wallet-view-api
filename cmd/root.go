@@ -1,18 +1,16 @@
 package cmd
 
 import (
-	"os"
-
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "api",
-	Short: "Wallet View API",
+	Use:   "wallet",
 }
 
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		os.Exit(1)
+		log.WithError(err).Error("Error to execute commands")
 	}
 }
