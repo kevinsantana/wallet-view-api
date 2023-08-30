@@ -4,8 +4,11 @@ import (
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/goccy/go-json"
 
 	"github.com/kevinsantana/wallet-view-api/internal/rest"
+	"github.com/kevinsantana/wallet-view-api/internal/rest/middlewares"
+	"github.com/kevinsantana/wallet-view-api/internal/rest/handlers"
 )
 
 type Routes []Route
@@ -36,6 +39,16 @@ var healthCheck = Routes{
 	},
 }
 
+var walletBalance = Routes{
+	{
+		Name:        "WalletBalance",
+		Method:      http.MethodGet,
+		Pattern:     "/walletBalance/:address/:currency",
+		HandlerFunc: handlers.GetWalletBalance,
+		Public:      true,
+	},
+}
+
 func Router() *fiber.App {
 	r := fiber.New(fiber.Config{
 		Prefork:               false,
@@ -43,14 +56,28 @@ func Router() *fiber.App {
 		StrictRouting:         false,
 		ServerHeader:          "*",
 		AppName:               "Wallet View Api",
-		Immutable:             false,
+		Immutable:             true,
 		DisableStartupMessage: true,
+		ErrorHandler:          middlewares.ErrorHandler(),
+		JSONEncoder:           json.Marshal,
+		JSONDecoder:           json.Unmarshal,
 	})
 
 	api := r.Group("/")
 	for _, route := range healthCheck {
 		api.Add(route.Method, route.Pattern, route.HandlerFunc)
 	}
+
+	v1 := api.Group("/api/v1")
+
+	var routes []Route
+	routes = append(routes, walletBalance...)
+
+	for _, route := range routes {
+		v1.Add(route.Method, route.Pattern, route.HandlerFunc)
+	}
+
+	r.Use(middlewares.RouteNotFound())
 
 	return r
 }
